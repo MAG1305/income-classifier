@@ -1,18 +1,48 @@
 # 🏦 Clasificador de Ingresos con Spark ML
 
-Este proyecto implementa un clasificador binario para predecir si una persona gana más de 50K al año usando regresión logística con Apache Spark ML.
+Este proyecto implementa un clasificador binario completo para predecir si una persona gana más de 50K al año usando regresión logística con Apache Spark ML. Incluye análisis exploratorio de datos, preprocesamiento avanzado, evaluación detallada del modelo y predicciones con datos nuevos.
+
+## ✒️ Autores
+
+> - Juan David Colonia Aldana - A00395956
+> - Miguel Ángel Gonzalez Arango - A00395687
+
+## 📋 Tabla de Contenido
+
+- [🏦 Clasificador de Ingresos con Spark ML](#-clasificador-de-ingresos-con-spark-ml)
+  - [✒️ Autores](#️-autores)
+  - [📋 Tabla de Contenido](#-tabla-de-contenido)
+  - [📋 Descripción del Proyecto](#-descripción-del-proyecto)
+    - [🎯 Objetivos del Proyecto](#-objetivos-del-proyecto)
+  - [🏗️ Estructura del Proyecto](#️-estructura-del-proyecto)
+    - [📁 Descripción de Archivos](#-descripción-de-archivos)
+  - [🚀 Instalación y Configuración](#-instalación-y-configuración)
+    - [Prerrequisitos](#prerrequisitos)
+    - [Instalación Rápida](#instalación-rápida)
+  - [⚙️ Pipeline](#️-pipeline)
+    - [Descripción del Pipeline](#descripción-del-pipeline)
+  - [📊 Resultados y Salida del Programa](#-resultados-y-salida-del-programa)
 
 ## 📋 Descripción del Proyecto
 
-La empresa DataPros necesita construir un modelo que permita predecir si una persona gana más de 50K al año basándose en características demográficas y laborales. El proyecto utiliza un dataset de 2000 registros simulados con las siguientes características:
+La empresa DataPros necesita construir un modelo robusto que permita predecir si una persona gana más de 50K al año basándose en características demográficas y laborales. El proyecto utiliza un dataset de 2000 registros simulados con las siguientes características:
 
-- **age**: Edad de la persona (años)
-- **sex**: Género (Male, Female)
-- **workclass**: Tipo de empleo (Private, Self-emp, Gov)
-- **fnlwgt**: Peso estadístico asociado al registro
-- **education**: Nivel educativo (Bachelors, HS-grad, 11th, Masters, etc.)
-- **hours_per_week**: Horas trabajadas por semana
+- **age**: Edad de la persona (18-65 años)
+- **sex**: Género (`Male`, `Female`)
+- **workclass**: Tipo de empleo (`Private`, `Self-emp`, `Gov`)
+- **fnlwgt**: Peso estadístico asociado al registro (20,129-399,891)
+- **education**: Nivel educativo (`Bachelors`, `HS-grad`, `11th`, `Masters`, `Some-college`, `Assoc`)
+- **hours_per_week**: Horas trabajadas por semana (20-60 horas)
 - **label**: Clase objetivo (>50K o <=50K)
+
+### 🎯 Objetivos del Proyecto
+
+1. **Análisis Exploratorio**: Comprender la distribución y relaciones en los datos
+2. **Preprocesamiento Robusto**: Transformar variables categóricas y numéricas
+3. **Modelado Avanzado**: Implementar regresión logística con Spark ML
+4. **Evaluación Completa**: Métricas detalladas de rendimiento del modelo
+5. **Predicciones Prácticas**: Sistema para clasificar nuevos registros
+6. **Documentación Técnica**: Código bien documentado y resultados guardados
 
 ## 🏗️ Estructura del Proyecto
 
@@ -21,30 +51,44 @@ income-classifier/
 ├── data/
 │   └── adult_income_sample.csv    # Dataset con 2000 registros
 ├── src/
-│   ├── income_classifier.py       # Script principal de clasificación
-│   └── predict_income.py          # Script para predicciones con datos nuevos
+│   ├── income_classifier.py       # Clase principal del clasificador
+│   └── utils.py                   # Utilidades para análisis y visualización
 ├── config/
-│   └── spark_config.py            # Configuración de Spark
-├── results/                        # Directorio para resultados (se crea automáticamente)
-├── requirements.txt                # Dependencias de Python
+│   └── spark_config.py            # Configuración optimizada de Spark
+├── results/                       # Resultados y métricas del modelo
+│   └── model_results.txt          # Métricas detalladas guardadas
+├── main.py                        # Script principal de ejecución
+├── requirements.txt               # Dependencias de Python
 └── README.md                      # Este archivo
 ```
+
+### 📁 Descripción de Archivos
+
+- **main.py**: Punto de entrada principal que ejecuta el análisis completo
+- **src/income_classifier.py**: Clase principal con toda la lógica del clasificador
+- **src/utils.py**: Funciones auxiliares para análisis exploratorio y evaluación
+- **config/spark_config.py**: Configuración optimizada de Spark para Windows
+- **data/adult_income_sample.csv**: Dataset principal con 2000 registros
+- **results/**: Directorio donde se guardan automáticamente los resultados
 
 ## 🚀 Instalación y Configuración
 
 ### Prerrequisitos
 
-- Python 3.8 o superior
-- Java 8 o superior (requerido para Spark)
-- Apache Spark 3.5.0
+- **Python 3.10**
+- **Java 17** (requerido para Spark)
+- **Apache Spark 3.5.0** (incluido en las dependencias de PySpark)
 
-### Instalación
+### Instalación Rápida
 
-1. **Clonar o descargar el proyecto**
+1. **Crear entorno virtual (recomendado)**
 
    ```bash
-   git clone <repository-url>
-   cd income-classifier
+   python -m venv venv
+   # En Windows:
+   venv\Scripts\activate
+   # En Linux/Mac:
+   source venv/bin/activate
    ```
 
 2. **Instalar dependencias**
@@ -53,115 +97,64 @@ income-classifier/
    pip install -r requirements.txt
    ```
 
-3. **Configurar Spark (opcional)**
-   - Si tienes Spark instalado localmente, asegúrate de que esté en tu PATH
-   - O descarga Spark desde [https://spark.apache.org/downloads.html](https://spark.apache.org/downloads.html)
+3. **Ejecutar**
 
-## 🎯 Uso del Proyecto
+   ```bash
+   python main.py
+   ```
 
-### 1. Clasificación Principal
+## ⚙️ Pipeline
 
-Ejecuta el script principal para entrenar el modelo y ver los resultados:
+```mermaid
+graph TD
+    A[🚀 Inicialización de Spark] --> B[📊 Carga de Datos CSV]
+    B --> C[🔍 Análisis Exploratorio]
+    C --> D[🔧 Preprocesamiento]
 
-```bash
-python src/income_classifier.py
+    D --> D1[StringIndexer<br/>Variables Categóricas]
+    D1 --> D2[OneHotEncoder<br/>Codificación Binaria]
+    D2 --> D3[VectorAssembler<br/>Ensamblaje de Features]
+
+    D3 --> E[🤖 Entrenamiento del Modelo]
+    E --> F[📈 Evaluación del Modelo]
+
+    F --> F1[Métricas de Rendimiento<br/>Accuracy, Precision, Recall, F1]
+    F1 --> F2[Matriz de Confusión]
+
+    F2 --> G[🆕 Predicciones con Datos Nuevos]
+    G --> H[💾 Guardado de Resultados]
+    H --> I[🛑 Cierre de Spark]
+
+    %% Estilos
+    style A fill:#1e3a5f,stroke:#90caf9,color:#ffffff
+    style B fill:#4a148c,stroke:#ce93d8,color:#ffffff
+    style C fill:#1b5e20,stroke:#81c784,color:#ffffff
+    style D fill:#e65100,stroke:#ffb74d,color:#ffffff
+    style D1 fill:#424242,stroke:#bdbdbd,color:#ffffff
+    style D2 fill:#424242,stroke:#bdbdbd,color:#ffffff
+    style D3 fill:#424242,stroke:#bdbdbd,color:#ffffff
+    style E fill:#880e4f,stroke:#f48fb1,color:#ffffff
+    style F fill:#33691e,stroke:#aed581,color:#ffffff
+    style F1 fill:#424242,stroke:#bdbdbd,color:#ffffff
+    style F2 fill:#424242,stroke:#bdbdbd,color:#ffffff
+    style G fill:#0d47a1,stroke:#90caf9,color:#ffffff
+    style H fill:#827717,stroke:#dce775,color:#ffffff
+    style I fill:#b71c1c,stroke:#ef9a9a,color:#ffffff
 ```
 
-Este script realiza las siguientes tareas:
+### Descripción del Pipeline
 
-1. **Carga de datos**: Lee el archivo CSV y muestra estadísticas básicas
-2. **Preprocesamiento**: Convierte variables categóricas usando StringIndexer y OneHotEncoder
-3. **Ensamblaje de características**: Combina todas las características en un vector
-4. **Entrenamiento**: Entrena un modelo de regresión logística
-5. **Evaluación**: Muestra predicciones y métricas de rendimiento
-6. **Predicción con datos nuevos**: Crea 9 registros nuevos y hace predicciones
+1. **🚀 Inicialización**: Configuración optimizada de Spark para el entorno local
+2. **📊 Carga de Datos**: Lectura del dataset con validación de esquema
+3. **🔍 Análisis Exploratorio**: Estadísticas descriptivas y distribuciones
+4. **🔧 Preprocesamiento**: Transformación de variables categóricas y numéricas
+   - StringIndexer para convertir texto a índices
+   - OneHotEncoder para codificación binaria
+   - VectorAssembler para combinar features
+5. **🤖 Entrenamiento**: Regresión logística con regularización Elastic Net
+6. **📈 Evaluación**: Cálculo de métricas y matriz de confusión
+7. **🆕 Predicciones**: Clasificación de 9 casos de ejemplo
+8. **💾 Guardado**: Resultados exportados a archivos
+9. **🛑 Cierre**: Liberación segura de recursos de Spark
 
-### 2. Predicciones Independientes
-
-Para realizar predicciones con datos nuevos (script de demostración):
-
-```bash
-python src/predict_income.py
-```
-
-## 🔧 Características Técnicas
-
-### Algoritmo de Machine Learning
-
-- **Regresión Logística** con Spark ML
-- **Regularización**: Elastic Net (α=0.8, λ=0.01)
-- **Máximo de iteraciones**: 100
-
-### Preprocesamiento de Datos
-
-- **StringIndexer**: Convierte variables categóricas a índices numéricos
-- **OneHotEncoder**: Codifica variables categóricas como vectores binarios
-- **VectorAssembler**: Combina todas las características en un vector
-
-### Variables de Entrada
-
-- **Numéricas**: age, fnlwgt, hours_per_week
-- **Categóricas**: sex, workclass, education
-- **Objetivo**: label (>50K o <=50K)
-
-## 📊 Resultados Esperados
-
-El script principal mostrará:
-
-1. **Estadísticas del dataset**: Esquema, registros de muestra, estadísticas descriptivas
-2. **Predicciones del modelo**: Resultados con probabilidades para los 2000 registros
-3. **Métricas de evaluación**: AUC (Area Under Curve)
-4. **Predicciones con datos nuevos**: 9 casos de ejemplo con análisis detallado
-
-### Ejemplo de Salida
-
-```
-👤 Persona 1:
-   📋 Perfil:
-      • Edad: 25 años
-      • Sexo: Male
-      • Tipo de trabajo: Private
-      • Educación: Bachelors
-      • Horas por semana: 40
-   🎯 Predicción: >50K
-   📊 Probabilidades:
-      • <=50K: 0.234 (23.4%)
-      • >50K:  0.766 (76.6%)
-```
-
-## 🛠️ Personalización
-
-### Modificar Datos de Prueba
-
-Para cambiar los datos de prueba en `predict_income.py`, modifica la lista `sample_data` en el método `create_sample_data()`:
-
-```python
-sample_data = [
-    (edad, "sexo", "tipo_trabajo", peso, "educacion", horas_semana),
-    # Agregar más registros...
-]
-```
-
-### Ajustar Parámetros del Modelo
-
-En `income_classifier.py`, modifica los parámetros de la regresión logística:
-
-```python
-lr = LogisticRegression(
-    featuresCol="features",
-    labelCol="label_indexed",
-    maxIter=100,           # Número de iteraciones
-    regParam=0.01,         # Parámetro de regularización
-    elasticNetParam=0.8    # Balance entre L1 y L2
-)
-```
-
-## 📈 Interpretación de Resultados
-
-### Métricas de Rendimiento
-
-- **AUC (Area Under Curve)**: Mide la capacidad del modelo para distinguir entre clases
-  - 0.5: Rendimiento aleatorio
-  - 0.7-0.8: Bueno
-  - 0.8-0.9: Muy bueno
-  - > 0.9: Excelente
+## 📊 Resultados y Salida del Programa
