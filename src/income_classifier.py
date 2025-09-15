@@ -152,7 +152,7 @@ class IncomeClassifier:
         Task 3: Feature assembly and Task 4: Model definition and training
         Create VectorAssembler and configure logistic regression model
         """
-        print("\n⚙️ Configurando ensamblaje de características...")
+        print("\n🔩 Configurando ensamblaje de características...")
         
         # Task 3: Feature assembly
         feature_columns = ["age", "fnlwgt", "hours_per_week"]
@@ -230,19 +230,8 @@ class IncomeClassifier:
             print(f"   - Recall (Weighted): {recall:.4f}")
             print(f"   - F1-Score: {f1_score:.4f}")
             
-            # Try to calculate AUC more carefully
-            try:
-                binary_evaluator = BinaryClassificationEvaluator(
-                    labelCol="label_indexed",
-                    rawPredictionCol="rawPrediction"
-                )
-                auc = binary_evaluator.evaluate(predictions)
-                print(f"   - AUC-ROC: {auc:.4f}")
-            except Exception as auc_error:
-                print(f"   - AUC-ROC: No disponible ({str(auc_error)[:50]}...)")
-            
         except Exception as e:
-            print(f"\n⚠️  Error al calcular métricas: {e}")
+            print(f"\n❌ Error al calcular métricas: {e}")
             print("   - Continuando con el análisis...")
         
         # Results analysis
@@ -253,47 +242,52 @@ class IncomeClassifier:
         
         return predictions
     
-    def create_new_data(self):
+    def create_new_data(self, new_data_path="data/new_predictions.csv"):
         """
         Task 6: Prediction with new data
-        Create new data for prediction
+        Load new data for prediction from CSV file
+        
+        Args:
+            new_data_path (str): Path to CSV file with new data for predictions
         """
-        print("\n🆕 Creando datos nuevos para predicción...")
+        print("\n🆕 Loading new data for predictions...")
         
-        # Create DataFrame with new data (at least 9 records)
-        new_data = [
-            (25, "Male", "Private", 150000, "Bachelors", 40),  # Young person with university education
-            (45, "Female", "Gov", 200000, "Masters", 35),      # Woman with master's degree in government
-            (30, "Male", "Self-emp", 180000, "HS-grad", 50),   # Self-employed man
-            (55, "Female", "Private", 250000, "Bachelors", 30), # Older woman with experience
-            (22, "Male", "Private", 120000, "Some-college", 45), # Young person with partial education
-            (40, "Female", "Gov", 220000, "Masters", 25),      # Woman with master's degree, few hours
-            (35, "Male", "Self-emp", 300000, "Bachelors", 60), # Self-employed man, many hours
-            (50, "Female", "Private", 280000, "HS-grad", 40),  # Woman with experience
-            (28, "Male", "Gov", 160000, "Bachelors", 35)       # Young man in government
-        ]
-        
-        schema = StructType([
-            StructField("age", IntegerType(), True),
-            StructField("sex", StringType(), True),
-            StructField("workclass", StringType(), True),
-            StructField("fnlwgt", IntegerType(), True),
-            StructField("education", StringType(), True),
-            StructField("hours_per_week", IntegerType(), True)
-        ])
-        
-        # Create DataFrame with new records
-        new_df = self.spark.createDataFrame(new_data, schema)
-        
-        print("✅ New data created (9 records)")
-        
-        # Show data
-        print("\n👀 New data created:")
-        for i, row in enumerate(new_data, 1):
-            age, sex, workclass, fnlwgt, education, hours = row
-            print(f"   {i}. Age: {age}, Sex: {sex}, Work: {workclass}, Education: {education}, Hours: {hours}")
-        
-        return new_df
+        try:
+            # Define schema for new data
+            schema = StructType([
+                StructField("age", IntegerType(), True),
+                StructField("sex", StringType(), True),
+                StructField("workclass", StringType(), True),
+                StructField("fnlwgt", IntegerType(), True),
+                StructField("education", StringType(), True),
+                StructField("hours_per_week", IntegerType(), True)
+            ])
+            
+            # Read CSV file with new data
+            new_df = self.spark.read \
+                .option("header", "true") \
+                .option("inferSchema", "false") \
+                .schema(schema) \
+                .csv(new_data_path)
+            
+            # Count records
+            record_count = new_df.count()
+            print(f"✅ New data loaded: {record_count} records from {new_data_path}")
+            
+            # Show data preview
+            print("\n👀 New data loaded:")
+            new_data_pandas = new_df.toPandas()
+            for i, row in new_data_pandas.iterrows():
+                print(f"   {i+1}. Age: {row['age']}, Sex: {row['sex']}, Work: {row['workclass']}, "
+                      f"Education: {row['education']}, Hours: {row['hours_per_week']}")
+            
+            return new_df
+            
+        except Exception as e:
+            print(f"❌ Error loading new data from {new_data_path}: {e}")
+            print("💡 Make sure the CSV file exists and has the correct format:")
+            print("   Columns: age,sex,workclass,fnlwgt,education,hours_per_week")
+            return None
     
     def predict_new_data(self, new_df):
         """
@@ -308,42 +302,43 @@ class IncomeClassifier:
             print("✅ Predictions made successfully")
             
             try:
-                # Try to show results
-                print("\n📊 Prediction results:")
+                # Show results from the trained model
+                print("\n📊 Model prediction results:")
                 
-                # Create manual interpretation
-                print("\n💡 Detailed interpretation:")
-                print("="*80)
-
-                # Use the original data for interpretation
-                original_data = [
-                    (25, "Male", "Private", 150000, "Bachelors", 40),
-                    (45, "Female", "Gov", 200000, "Masters", 35),
-                    (30, "Male", "Self-emp", 180000, "HS-grad", 50),
-                    (55, "Female", "Private", 250000, "Bachelors", 30),
-                    (22, "Male", "Private", 120000, "Some-college", 45),
-                    (40, "Female", "Gov", 220000, "Masters", 25),
-                    (35, "Male", "Self-emp", 300000, "Bachelors", 60),
-                    (50, "Female", "Private", 280000, "HS-grad", 40),
-                    (28, "Male", "Gov", 160000, "Bachelors", 35)
-                ]
-
-                for i, row in enumerate(original_data, 1):
-                    age, sex, workclass, fnlwgt, education, hours = row
-                    # Make a simple logical prediction based on characteristics
-                    prediction_label = ">50K" if (age > 30 and hours > 35 and education in ["Bachelors", "Masters"]) else "<=50K"
+                # Get predictions from the trained model
+                try:
+                    # Convert predictions to pandas for easier display
+                    predictions_pandas = predictions.toPandas()
                     
-                    print(f"👤 Person {i}:")
-                    print(f"   📋 Profile: {age} years, {sex}, {workclass}, {education}, {hours}h/week")
-                    print(f"   🎯 Estimated prediction: {prediction_label}")
-                    print()
+                    print("\n💡 Detailed predictions from trained model:")
+                    print("="*80)
+                    
+                    for i, row in predictions_pandas.iterrows():
+                        age = row['age']
+                        sex = row['sex']
+                        workclass = row['workclass']
+                        education = row['education']
+                        hours = row['hours_per_week']
+                        prediction = row['prediction']
+                        
+                        # Convert prediction to readable format
+                        prediction_label = ">50K" if prediction == 1.0 else "<=50K"
+                        
+                        print(f"👤 Person {i+1}:")
+                        print(f"   📋 Profile: {age} years, {sex}, {workclass}, {education}, {hours}h/week")
+                        print(f"   🎯 Model prediction: {prediction_label}")
+                        print()
+                        
+                except Exception as pandas_error:
+                    print(f"⚠️  Error processing predictions for display: {pandas_error}")
+                    print("   - Predictions were made successfully by the model")
                 
                 return predictions
                 
             except Exception as display_error:
                 print(f"⚠️  Error showing detailed results: {display_error}")
-                print("   - Predictions were made correctly")
-                print("   - 9 new records were processed")
+                print("   - Predictions were made correctly by the model")
+                print("   - All new records were processed")
                 return predictions
             
         except Exception as e:
