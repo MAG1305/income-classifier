@@ -18,7 +18,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'config'))
 
 from income_classifier import IncomeClassifier
-from utils import analyze_data_distribution, create_visualizations, evaluate_model_performance, save_results_to_file, create_prediction_summary
+from utils import analyze_data_distribution, evaluate_model_performance, save_results_to_file, create_prediction_summary
 from spark_config import create_spark_session, stop_spark_session
 
 def main():
@@ -45,13 +45,6 @@ def main():
         
         print("\n🔍 Realizando análisis exploratorio...")
         pandas_df = analyze_data_distribution(classifier.df, spark)
-        
-        print("\n📊 Creando visualizaciones...")
-        try:
-            create_visualizations(pandas_df)
-        except Exception as e:
-            print(f"⚠️  No se pudieron crear las visualizaciones: {e}")
-            print("   (Esto es normal si no tienes matplotlib instalado)")
         
         print("\n🔧 Preprocesando datos...")
         preprocessing_stages = classifier.preprocess_data()
