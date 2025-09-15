@@ -55,8 +55,8 @@ income-classifier/
 │   └── utils.py                   # Utilidades para análisis y visualización
 ├── config/
 │   └── spark_config.py            # Configuración optimizada de Spark
-├── results/                       # Resultados y métricas del modelo
-│   └── model_results.txt          # Métricas detalladas guardadas
+├── output/                        # Resultados y métricas del modelo
+│   └── Results.md                 # Métricas detalladas guardadas
 ├── main.py                        # Script principal de ejecución
 ├── requirements.txt               # Dependencias de Python
 └── README.md                      # Este archivo
@@ -69,7 +69,7 @@ income-classifier/
 - **src/utils.py**: Funciones auxiliares para análisis exploratorio y evaluación
 - **config/spark_config.py**: Configuración optimizada de Spark para Windows
 - **data/adult_income_sample.csv**: Dataset principal con 2000 registros
-- **results/**: Directorio donde se guardan automáticamente los resultados
+- **output/**: Directorio donde se guardan automáticamente los resultados
 
 ## 🚀 Instalación y Configuración
 
@@ -154,7 +154,7 @@ graph TD
 5. **🤖 Entrenamiento**: Regresión logística con regularización Elastic Net
 6. **📈 Evaluación**: Cálculo de métricas y matriz de confusión
 7. **🆕 Predicciones**: Clasificación de 9 casos de ejemplo
-8. **💾 Guardado**: Resultados exportados a archivos
+8. **💾 Guardado**: Resultados exportados a `output/Results.md` en formato Markdown
 9. **🛑 Cierre**: Liberación segura de recursos de Spark
 
 ## 📊 Resultados y Salida del Programa

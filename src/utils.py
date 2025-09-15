@@ -164,9 +164,9 @@ def evaluate_model_performance(predictions_df: DataFrame):
         print("   - Basic metrics were shown in the main classifier")
         return None
 
-def save_results_to_file(results, filename="results/model_results.txt"):
+def save_results_to_file(results, filename="output/Results.md"):
     """
-    Save results to a text file
+    Save results to a markdown file
     
     Args:
         results: Dictionary with results
@@ -181,18 +181,20 @@ def save_results_to_file(results, filename="results/model_results.txt"):
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         
         with open(filename, 'w', encoding='utf-8') as f:
-            f.write("RESULTADOS DEL MODELO DE CLASIFICACIÓN DE INGRESOS\n")
-            f.write("=" * 60 + "\n\n")
+            f.write("# 📊 Resultados del Modelo de Clasificación de Ingresos\n\n")
             
-            f.write("MÉTRICAS DE RENDIMIENTO:\n")
-            f.write(f"Precisión: {results['precision']:.4f}\n")
-            f.write(f"Sensibilidad (Recall): {results['recall']:.4f}\n")
-            f.write(f"F1-Score: {results['f1_score']:.4f}\n")
-            f.write(f"Exactitud: {results['accuracy']:.4f}\n\n")
+            f.write("## 📈 Métricas de Rendimiento\n\n")
+            f.write("| Métrica | Valor |\n")
+            f.write("|---------|-------|\n")
+            f.write(f"| **Precisión** | {results['precision']:.4f} |\n")
+            f.write(f"| **Sensibilidad (Recall)** | {results['recall']:.4f} |\n")
+            f.write(f"| **F1-Score** | {results['f1_score']:.4f} |\n")
+            f.write(f"| **Exactitud** | {results['accuracy']:.4f} |\n\n")
             
             if 'confusion_matrix' in results:
-                f.write("MATRIZ DE CONFUSIÓN:\n")
+                f.write("## 🔍 Matriz de Confusión\n\n")
                 cm = results['confusion_matrix']
+                f.write("```\n")
                 if isinstance(cm, list):
                     # List format
                     f.write("                 Predicción\n")
@@ -205,6 +207,19 @@ def save_results_to_file(results, filename="results/model_results.txt"):
                     f.write("                <=50K  >50K\n")
                     f.write(f"Real <=50K     {cm[0,0]:4d}  {cm[0,1]:4d}\n")
                     f.write(f"Real >50K      {cm[1,0]:4d}  {cm[1,1]:4d}\n")
+                f.write("```\n\n")
+                
+                # Add interpretation
+                f.write("### 📋 Interpretación\n\n")
+                if isinstance(cm, list):
+                    tn, fp, fn, tp = cm[0][0], cm[0][1], cm[1][0], cm[1][1]
+                else:
+                    tn, fp, fn, tp = cm[0,0], cm[0,1], cm[1,0], cm[1,1]
+                
+                f.write("- **Verdaderos Negativos (TN)**: {} casos <=50K clasificados correctamente\n".format(tn))
+                f.write("- **Falsos Positivos (FP)**: {} casos <=50K clasificados incorrectamente como >50K\n".format(fp))
+                f.write("- **Falsos Negativos (FN)**: {} casos >50K clasificados incorrectamente como <=50K\n".format(fn))
+                f.write("- **Verdaderos Positivos (TP)**: {} casos >50K clasificados correctamente\n\n".format(tp))
         
         print(f"✅ Resultados guardados en: {filename}")
         
@@ -267,57 +282,3 @@ def create_prediction_summary(predictions_df: DataFrame, spark):
     except Exception as e:
         print(f"⚠️  Error in prediction summary: {e}")
         print("   - Continuing without detailed summary...")
-
-def create_simple_visualization(pandas_df):
-    """
-    Create simple visualizations if matplotlib is available
-    
-    Args:
-        pandas_df: Pandas DataFrame with data
-    """
-    try:
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        
-        # Create figure with subplots
-        fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-        
-        # Target variable distribution
-        pandas_df['label'].value_counts().plot(kind='bar', ax=axes[0,0])
-        axes[0,0].set_title('Income Distribution')
-        axes[0,0].set_ylabel('Frequency')
-        
-        # Age distribution
-        pandas_df['age'].hist(bins=20, ax=axes[0,1])
-        axes[0,1].set_title('Age Distribution')
-        axes[0,1].set_xlabel('Age')
-        axes[0,1].set_ylabel('Frequency')
-        
-        # Hours per week
-        pandas_df['hours_per_week'].hist(bins=20, ax=axes[1,0])
-        axes[1,0].set_title('Hours per Week')
-        axes[1,0].set_xlabel('Hours')
-        axes[1,0].set_ylabel('Frequency')
-        
-        # Income by sex
-        crosstab = pd.crosstab(pandas_df['sex'], pandas_df['label'])
-        crosstab.plot(kind='bar', ax=axes[1,1])
-        axes[1,1].set_title('Income by Sex')
-        axes[1,1].set_ylabel('Frequency')
-        
-        plt.tight_layout()
-        
-        # Save if possible
-        try:
-            os.makedirs('results', exist_ok=True)
-            plt.savefig('results/data_analysis.png', dpi=300, bbox_inches='tight')
-            print("📊 Charts saved to: results/data_analysis.png")
-        except:
-            print("📊 Charts created (could not be saved)")
-            
-        plt.show()
-        
-    except ImportError:
-        print("⚠️  matplotlib/seaborn not available - skipping visualizations")
-    except Exception as e:
-        print(f"⚠️  Error in visualization: {e}")
