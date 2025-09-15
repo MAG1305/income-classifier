@@ -148,10 +148,4 @@ derby.log
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# Project specific
-results/*.png
-results/*.txt
-*.log
-
 artifacts/
