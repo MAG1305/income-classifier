@@ -22,6 +22,11 @@ Este proyecto implementa un clasificador binario completo para predecir si una p
   - [⚙️ Pipeline](#️-pipeline)
     - [Descripción del Pipeline](#descripción-del-pipeline)
   - [📊 Resultados y Salida del Programa](#-resultados-y-salida-del-programa)
+    - [Archivos de Salida](#archivos-de-salida)
+  - [🛠️ Personalización de Predicciones](#️-personalización-de-predicciones)
+    - [Modificar Datos de Predicción](#modificar-datos-de-predicción)
+    - [Formato Requerido](#formato-requerido)
+    - [Ejemplo de Uso](#ejemplo-de-uso)
 
 ## 📋 Descripción del Proyecto
 
@@ -49,7 +54,8 @@ La empresa DataPros necesita construir un modelo robusto que permita predecir si
 ```
 income-classifier/
 ├── data/
-│   └── adult_income_sample.csv    # Dataset con 2000 registros
+│   ├── adult_income_sample.csv    # Dataset con 2000 registros
+│   └── new_predictions.csv        # Datos nuevos para predicciones
 ├── src/
 │   ├── income_classifier.py       # Clase principal del clasificador
 │   └── utils.py                   # Utilidades para análisis y visualización
@@ -69,6 +75,7 @@ income-classifier/
 - **src/utils.py**: Funciones auxiliares para análisis exploratorio y evaluación
 - **config/spark_config.py**: Configuración optimizada de Spark para Windows
 - **data/adult_income_sample.csv**: Dataset principal con 2000 registros
+- **data/new_predictions.csv**: Datos nuevos para realizar predicciones
 - **output/**: Directorio donde se guardan automáticamente los resultados
 
 ## 🚀 Instalación y Configuración
@@ -121,7 +128,7 @@ graph TD
     F --> F1[Métricas de Rendimiento<br/>Accuracy, Precision, Recall, F1]
     F1 --> F2[Matriz de Confusión]
 
-    F2 --> G[🆕 Predicciones con Datos Nuevos]
+    F2 --> G[🆕 Predicciones desde CSV]
     G --> H[💾 Guardado de Resultados]
     H --> I[🛑 Cierre de Spark]
 
@@ -153,8 +160,41 @@ graph TD
    - VectorAssembler para combinar features
 5. **🤖 Entrenamiento**: Regresión logística con regularización Elastic Net
 6. **📈 Evaluación**: Cálculo de métricas y matriz de confusión
-7. **🆕 Predicciones**: Clasificación de 9 casos de ejemplo
+7. **🆕 Predicciones**: Lectura de datos desde `data/new_predictions.csv` y clasificación
 8. **💾 Guardado**: Resultados exportados a `output/Results.md` en formato Markdown
 9. **🛑 Cierre**: Liberación segura de recursos de Spark
 
 ## 📊 Resultados y Salida del Programa
+
+### Archivos de Salida
+
+## 🛠️ Personalización de Predicciones
+
+### Modificar Datos de Predicción
+
+Para cambiar los datos que se usan para nuevas predicciones, edita el archivo `data/new_predictions.csv`:
+
+```csv
+age,sex,workclass,fnlwgt,education,hours_per_week
+25,Male,Private,150000,Bachelors,40
+45,Female,Gov,200000,Masters,35
+30,Male,Self-emp,180000,HS-grad,50
+# Agrega más filas según necesites...
+```
+
+### Formato Requerido
+
+| Campo              | Tipo   | Valores Válidos                                                    |
+| ------------------ | ------ | ------------------------------------------------------------------ |
+| **age**            | Entero | 18-65                                                              |
+| **sex**            | Texto  | `Male`, `Female`                                                   |
+| **workclass**      | Texto  | `Private`, `Self-emp`, `Gov`                                       |
+| **fnlwgt**         | Entero | Peso estadístico (cualquier número entero)                         |
+| **education**      | Texto  | `Bachelors`, `HS-grad`, `11th`, `Masters`, `Some-college`, `Assoc` |
+| **hours_per_week** | Entero | 20-60                                                              |
+
+### Ejemplo de Uso
+
+1. **Editar el CSV**: Modifica `data/new_predictions.csv` con tus datos
+2. **Ejecutar**: `python main.py`
+3. **Ver resultados**: Las predicciones aparecerán en consola y se guardarán en `output/Results.md`
