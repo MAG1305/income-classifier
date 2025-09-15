@@ -1,29 +1,28 @@
 """
-Script Principal - Clasificador de Ingresos con Spark ML
-=======================================================
+Main Script - Income Classifier with Spark ML
+==============================================
 
-Este es el punto de entrada principal para ejecutar todo el análisis
-de clasificación de ingresos.
+This is the main entry point to run the complete income
+classification analysis.
 
-Uso:
+Usage:
     python main.py
 """
 
 import sys
 import os
-from pyspark.sql import SparkSession
 
-# Agregar directorios al path
+# Add directories to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'config'))
 
+from spark_config import create_spark_session, stop_spark_session
 from income_classifier import IncomeClassifier
 from utils import analyze_data_distribution, evaluate_model_performance, save_results_to_file, create_prediction_summary
-from spark_config import create_spark_session, stop_spark_session
 
 def main():
     """
-    Función principal que ejecuta todo el análisis
+    Main function that runs the complete analysis
     """
     print("=" * 80)
     print("🏦 CLASIFICADOR DE INGRESOS CON SPARK ML - ANÁLISIS COMPLETO")
@@ -36,7 +35,11 @@ def main():
         print("\n🚀 Inicializando Spark...")
         spark = create_spark_session("IncomeClassifierComplete")
         print("✅ Spark inicializado correctamente")
-        
+
+        if not os.path.exists(data_path):
+            print(f"❌ Error: Data file not found at {data_path}")
+            return 1
+
         classifier = IncomeClassifier(data_path)
         classifier.spark = spark 
         
@@ -56,8 +59,9 @@ def main():
         print("\n📈 Evaluando rendimiento del modelo...")
         results = evaluate_model_performance(predictions)
         
-        print("\n💾 Guardando resultados...")
-        save_results_to_file(results)
+        if results:
+            print("\n💾 Guardando resultados...")
+            save_results_to_file(results)
         
         create_prediction_summary(predictions, spark)
         
@@ -66,16 +70,13 @@ def main():
         new_predictions = classifier.predict_new_data(new_df)
         
         print("\n🎉 ANÁLISIS COMPLETO FINALIZADO EXITOSAMENTE!")
-        print("\n📁 Archivos generados:")
-        print("   • results/model_results.txt - Métricas del modelo")
-        print("   • results/data_analysis.png - Gráficos de análisis (si está disponible)")
-        
         print("\n📊 Resumen del análisis:")
         print(f"   • Dataset: {classifier.df.count()} registros")
-        print(f"   • Precisión del modelo: {results['precision']:.3f}")
-        print(f"   • Sensibilidad: {results['recall']:.3f}")
-        print(f"   • F1-Score: {results['f1_score']:.3f}")
-        print(f"   • Exactitud: {results['accuracy']:.3f}")
+        if results:
+            print(f"   • Precisión del modelo: {results['precision']:.3f}")
+            print(f"   • Sensibilidad: {results['recall']:.3f}")
+            print(f"   • F1-Score: {results['f1_score']:.3f}")
+            print(f"   • Exactitud: {results['accuracy']:.3f}")
         
     except Exception as e:
         print(f"\n❌ Error durante el análisis: {str(e)}")
@@ -84,7 +85,6 @@ def main():
         return 1
         
     finally:
-        # Detener Spark
         if spark:
             stop_spark_session(spark)
             print("\n🛑 Sesión de Spark detenida")
