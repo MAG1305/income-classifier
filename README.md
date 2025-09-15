@@ -22,7 +22,6 @@ Este proyecto implementa un clasificador binario completo para predecir si una p
   - [⚙️ Pipeline](#️-pipeline)
     - [Descripción del Pipeline](#descripción-del-pipeline)
   - [📊 Resultados y Salida del Programa](#-resultados-y-salida-del-programa)
-    - [Archivos de Salida](#archivos-de-salida)
   - [🛠️ Personalización de Predicciones](#️-personalización-de-predicciones)
     - [Modificar Datos de Predicción](#modificar-datos-de-predicción)
     - [Formato Requerido](#formato-requerido)
@@ -63,6 +62,13 @@ income-classifier/
 │   └── spark_config.py            # Configuración optimizada de Spark
 ├── output/                        # Resultados y métricas del modelo
 │   └── Results.md                 # Métricas detalladas guardadas
+├── images/                        # Capturas de pantalla de la ejecución
+│   ├── terminal_output_01.png
+│   ├── terminal_output_02.png
+│   ├── terminal_output_03.png
+│   ├── terminal_output_04.png
+│   ├── terminal_output_05.png
+│   └── terminal_output_06.png
 ├── main.py                        # Script principal de ejecución
 ├── requirements.txt               # Dependencias de Python
 └── README.md                      # Este archivo
@@ -77,6 +83,7 @@ income-classifier/
 - **data/adult_income_sample.csv**: Dataset principal con 2000 registros
 - **data/new_predictions.csv**: Datos nuevos para realizar predicciones
 - **output/**: Directorio donde se guardan automáticamente los resultados
+- **images/**: Capturas de pantalla mostrando la ejecución completa del programa
 
 ## 🚀 Instalación y Configuración
 
@@ -166,7 +173,19 @@ graph TD
 
 ## 📊 Resultados y Salida del Programa
 
-### Archivos de Salida
+![Salida termina 1]('./images/terminal_output_01.png')
+
+![Salida terminal 1](./images/terminal_output_01.png)
+
+![Salida terminal 2](./images/terminal_output_02.png)
+
+![Salida terminal 3](./images/terminal_output_03.png)
+
+![Salida terminal 4](./images/terminal_output_04.png)
+
+![Salida terminal 5](./images/terminal_output_05.png)
+
+![Salida terminal 6](./images/terminal_output_06.png)
 
 ## 🛠️ Personalización de Predicciones
 
