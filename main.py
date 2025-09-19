@@ -25,16 +25,16 @@ def main():
     Main function that runs the complete analysis
     """
     print("=" * 80)
-    print("🏦 CLASIFICADOR DE INGRESOS CON SPARK ML - ANÁLISIS COMPLETO")
+    print("🏦 INCOME CLASSIFIER WITH SPARK ML - COMPLETE ANALYSIS")
     print("=" * 80)
     
     data_path = "data/adult_income_sample.csv"
     spark = None
     
     try:
-        print("\n🚀 Inicializando Spark...")
+        print("\n🚀 Initializing Spark...")
         spark = create_spark_session("IncomeClassifierComplete")
-        print("✅ Spark inicializado correctamente")
+        print("✅ Spark initialized successfully")
 
         if not os.path.exists(data_path):
             print(f"❌ Error: Data file not found at {data_path}")
@@ -43,43 +43,43 @@ def main():
         classifier = IncomeClassifier(data_path)
         classifier.spark = spark 
         
-        print("\n📊 Cargando y analizando datos...")
+        print("\n📊 Loading and analyzing data...")
         classifier.load_data()
         
-        print("\n🔍 Realizando análisis exploratorio...")
+        print("\n🔍 Performing exploratory analysis...")
         pandas_df = analyze_data_distribution(classifier.df, spark)
         
-        print("\n🔧 Preprocesando datos...")
+        print("\n🔧 Preprocessing data...")
         preprocessing_stages = classifier.preprocess_data()
         
-        print("\n🤖 Creando y entrenando modelo...")
+        print("\n🤖 Creating and training model...")
         classifier.create_model(preprocessing_stages)
         predictions = classifier.train_model()
         
-        print("\n📈 Evaluando rendimiento del modelo...")
+        print("\n📈 Evaluating model performance...")
         results = evaluate_model_performance(predictions)
         
         if results:
-            print("\n💾 Guardando resultados...")
+            print("\n💾 Saving results...")
             save_results_to_file(results)
         
         create_prediction_summary(predictions, spark)
         
-        print("\n🆕 Creando datos nuevos para predicción...")
+        print("\n🆕 Creating new data for prediction...")
         new_df = classifier.create_new_data()
         new_predictions = classifier.predict_new_data(new_df)
         
-        print("\n🎉 ANÁLISIS COMPLETO FINALIZADO EXITOSAMENTE!")
-        print("\n📊 Resumen del análisis:")
+        print("\n🎉 COMPLETE ANALYSIS FINISHED SUCCESSFULLY!")
+        print("\n📊 Analysis summary:")
         print(f"   • Dataset: {classifier.df.count()} registros")
         if results:
-            print(f"   • Precisión del modelo: {results['precision']:.3f}")
-            print(f"   • Sensibilidad: {results['recall']:.3f}")
+            print(f"   • Model precision: {results['precision']:.3f}")
+            print(f"   • Recall: {results['recall']:.3f}")
             print(f"   • F1-Score: {results['f1_score']:.3f}")
-            print(f"   • Exactitud: {results['accuracy']:.3f}")
+            print(f"   • Accuracy: {results['accuracy']:.3f}")
         
     except Exception as e:
-        print(f"\n❌ Error durante el análisis: {str(e)}")
+        print(f"\n❌ Error during analysis: {str(e)}")
         import traceback
         traceback.print_exc()
         return 1
@@ -87,7 +87,7 @@ def main():
     finally:
         if spark:
             stop_spark_session(spark)
-            print("\n🛑 Sesión de Spark detenida")
+            print("\n🛑 Spark session stopped")
     
     return 0
 

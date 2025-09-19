@@ -21,7 +21,7 @@ def analyze_data_distribution(df: DataFrame, spark):
         df: Spark DataFrame
         spark: Spark session
     """
-    print("\n📊 ANÁLISIS DE DISTRIBUCIÓN DE DATOS")
+    print("\n📊 DATA DISTRIBUTION ANALYSIS")
     print("=" * 50)
     
     try:
@@ -69,7 +69,7 @@ def evaluate_model_performance(predictions_df: DataFrame):
     Args:
         predictions_df: DataFrame with predictions
     """
-    print("\n📊 EVALUACIÓN DETALLADA DEL MODELO")
+    print("\n📊 DETAILED MODEL EVALUATION")
     print("=" * 50)
     
     try:
@@ -93,11 +93,11 @@ def evaluate_model_performance(predictions_df: DataFrame):
             
             cm = confusion_matrix(y_true, y_pred)
             
-            print("\n🔍 Matriz de Confusión:")
-            print("                 Predicción")
+            print("\n🔍 Confusion Matrix:")
+            print("                 Prediction")
             print("                <=50K  >50K")
-            print(f"Real <=50K     {cm[0,0]:4d}  {cm[0,1]:4d}")
-            print(f"Real >50K      {cm[1,0]:4d}  {cm[1,1]:4d}")
+            print(f"Actual <=50K   {cm[0,0]:4d}  {cm[0,1]:4d}")
+            print(f"Actual >50K    {cm[1,0]:4d}  {cm[1,1]:4d}")
             
             # Calculate metrics
             tn, fp, fn, tp = cm.ravel()
@@ -107,11 +107,11 @@ def evaluate_model_performance(predictions_df: DataFrame):
             recall = tp / (tp + fn) if (tp + fn) > 0 else 0
             f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
             
-            print(f"\n📈 Métricas de Rendimiento:")
-            print(f"   • Precisión: {precision:.4f}")
-            print(f"   • Sensibilidad (Recall): {recall:.4f}")
+            print(f"\n📈 Performance Metrics:")
+            print(f"   • Precision: {precision:.4f}")
+            print(f"   • Recall: {recall:.4f}")
             print(f"   • F1-Score: {f1_score:.4f}")
-            print(f"   • Exactitud: {accuracy:.4f}")
+            print(f"   • Accuracy: {accuracy:.4f}")
             
             if 'probability' in pandas_pred.columns:
                 try:
@@ -145,11 +145,11 @@ def evaluate_model_performance(predictions_df: DataFrame):
             recall = tp / (tp + fn) if (tp + fn) > 0 else 0
             f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
             
-            print(f"\n📈 Métricas de Rendimiento:")
-            print(f"   • Precisión: {precision:.4f}")
-            print(f"   • Sensibilidad (Recall): {recall:.4f}")
+            print(f"\n📈 Performance Metrics:")
+            print(f"   • Precision: {precision:.4f}")
+            print(f"   • Recall: {recall:.4f}")
             print(f"   • F1-Score: {f1_score:.4f}")
-            print(f"   • Exactitud: {accuracy:.4f}")
+            print(f"   • Accuracy: {accuracy:.4f}")
             
             return {
                 'accuracy': accuracy,
@@ -221,7 +221,7 @@ def save_results_to_file(results, filename="output/Results.md"):
                 f.write("- **Falsos Negativos (FN)**: {} casos >50K clasificados incorrectamente como <=50K\n".format(fn))
                 f.write("- **Verdaderos Positivos (TP)**: {} casos >50K clasificados correctamente\n\n".format(tp))
         
-        print(f"✅ Resultados guardados en: {filename}")
+        print(f"✅ Results saved to: {filename}")
         
     except Exception as e:
         print(f"⚠️  Error saving results: {e}")
@@ -234,7 +234,7 @@ def create_prediction_summary(predictions_df: DataFrame, spark):
         predictions_df: DataFrame with predictions
         spark: Spark session
     """
-    print("\n📋 RESUMEN DE PREDICCIONES")
+    print("\n📋 PREDICTIONS SUMMARY")
     print("=" * 50)
     
     try:
@@ -243,13 +243,13 @@ def create_prediction_summary(predictions_df: DataFrame, spark):
         
         total_predictions = predictions_df.count()
         
-        print(f"Total de predicciones: {total_predictions}")
+        print(f"Total predictions: {total_predictions}")
         
         for row in pred_summary:
             pred_class = ">50K" if row["prediction"] == 1.0 else "<=50K"
             count = row["count"]
             percentage = (count / total_predictions) * 100
-            print(f"Predicciones {pred_class}: {count} ({percentage:.1f}%)")
+            print(f"Predictions {pred_class}: {count} ({percentage:.1f}%)")
         
         # Confidence analysis if probabilities are available
         try:

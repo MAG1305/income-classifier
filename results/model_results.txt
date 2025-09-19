@@ -1,0 +1,14 @@
+RESULTADOS DEL MODELO DE CLASIFICACIÓN DE INGRESOS
+============================================================
+
+MÉTRICAS DE RENDIMIENTO:
+Precisión: 0.5243
+Sensibilidad (Recall): 0.3655
+F1-Score: 0.4307
+Exactitud: 0.5295
+
+MATRIZ DE CONFUSIÓN:
+                 Predicción
+                <=50K  >50K
+Real <=50K      703   323
+Real >50K       618   356

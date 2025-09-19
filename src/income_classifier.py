@@ -40,16 +40,16 @@ class IncomeClassifier:
         
     def initialize_spark(self):
         """Initialize Spark session"""
-        print("🚀 Inicializando Spark...")
+        print("🚀 Initializing Spark...")
         self.spark = create_spark_session("IncomeClassifier")
-        print("✅ Spark inicializado correctamente")
+        print("✅ Spark initialized successfully")
         
     def load_data(self):
         """
         Task 1: Data loading
         Load data from CSV file
         """
-        print("\n📊 Cargando datos...")
+        print("\n📊 Loading data...")
         
         schema = StructType([
             StructField("age", IntegerType(), True),
@@ -67,18 +67,18 @@ class IncomeClassifier:
             .schema(schema) \
             .csv(self.data_path)
         
-        print(f"✅ Datos cargados: {self.df.count()} registros")
+        print(f"✅ Data loaded: {self.df.count()} records")
         
-        print("\n📋 Esquema de los datos:")
+        print("\n📋 Data schema:")
         self.df.printSchema()
         
-        print("\n📋 Primeros 10 registros:")
+        print("\n📋 First 10 records:")
         self.df.show(10, truncate=False)
         
-        print("\n📈 Estadísticas descriptivas:")
+        print("\n📈 Descriptive statistics:")
         self.df.describe().show()
         
-        print("\n🔍 Verificación de valores nulos:")
+        print("\n🔍 Null values check:")
         # Check null values for numeric and categorical columns
         numeric_columns = ["age", "fnlwgt", "hours_per_week"]
         string_columns = ["sex", "workclass", "education", "label"]
@@ -98,7 +98,7 @@ class IncomeClassifier:
         Task 2: Categorical variables preprocessing
         Use StringIndexer and OneHotEncoder on categorical variables
         """
-        print("\n🔧 Preprocesando variables categóricas...")
+        print("\n🔧 Preprocessing categorical variables...")
         
         # Categorical variables to process (do not include target variable here)
         categorical_columns = ["sex", "workclass", "education"]
@@ -131,7 +131,7 @@ class IncomeClassifier:
             )
             one_hot_encoders.append(encoder)
         
-        print("✅ Preprocesamiento configurado")
+        print("✅ Preprocessing configured")
         print(f"   - Input categorical variables: {categorical_columns}")
         print(f"   - Target variable: {target_column}")
         
@@ -152,7 +152,7 @@ class IncomeClassifier:
         Task 3: Feature assembly and Task 4: Model definition and training
         Create VectorAssembler and configure logistic regression model
         """
-        print("\n🔩 Configurando ensamblaje de características...")
+        print("\n🔩 Configuring feature assembly...")
         
         # Task 3: Feature assembly
         feature_columns = ["age", "fnlwgt", "hours_per_week"]
@@ -168,7 +168,7 @@ class IncomeClassifier:
         print(f"   - Encoded categorical variables: {encoded_columns}")
         print(f"   - Total features: {len(all_features)}")
         
-        print("\n🤖 Configurando modelo de Regresión Logística...")
+        print("\n🤖 Configuring Logistic Regression model...")
         
         # Task 4: Configure logistic regression
         lr = LogisticRegression(
@@ -183,7 +183,7 @@ class IncomeClassifier:
         all_stages = preprocessing_stages + [vector_assembler, lr]
         self.pipeline = Pipeline(stages=all_stages)
         
-        print("✅ Modelo configurado")
+        print("✅ Model configured")
         print("   - Algorithm: Logistic Regression")
         print("   - Maximum iterations: 100")
         print("   - Regularization parameter: 0.01")
@@ -194,7 +194,7 @@ class IncomeClassifier:
         Train the model with all data
         Task 5: Model evaluation
         """
-        print("\n🎯 Entrenando modelo...")
+        print("\n🎯 Training model...")
         
         # Train the model
         self.model = self.pipeline.fit(self.df)
@@ -204,7 +204,7 @@ class IncomeClassifier:
         # Make predictions
         predictions = self.model.transform(self.df)
         
-        print("\n📊 Predicciones del modelo:")
+        print("\n📊 Model predictions:")
         # Show only some predictions to avoid display problems
         predictions.select(
             "age", "sex", "workclass", "education", "hours_per_week",
@@ -224,15 +224,15 @@ class IncomeClassifier:
             recall = multi_evaluator.evaluate(predictions, {multi_evaluator.metricName: "weightedRecall"})
             f1_score = multi_evaluator.evaluate(predictions, {multi_evaluator.metricName: "f1"})
             
-            print(f"\n📈 Métricas de evaluación:")
+            print(f"\n📈 Evaluation metrics:")
             print(f"   - Accuracy: {accuracy:.4f}")
             print(f"   - Precision (Weighted): {precision:.4f}")
             print(f"   - Recall (Weighted): {recall:.4f}")
             print(f"   - F1-Score: {f1_score:.4f}")
             
         except Exception as e:
-            print(f"\n❌ Error al calcular métricas: {e}")
-            print("   - Continuando con el análisis...")
+            print(f"\n❌ Error calculating metrics: {e}")
+            print("   - Continuing with the analysis...")
         
         # Results analysis
         print("\n🔍 Results analysis:")
@@ -293,7 +293,7 @@ class IncomeClassifier:
         """
         Make predictions with new data
         """
-        print("\n🔮 Realizando predicciones con datos nuevos...")
+        print("\n🔮 Making predictions with new data...")
         
         try:
             # Make predictions using the complete trained model
@@ -393,7 +393,7 @@ def main():
     Main function
     """
     print("=" * 60)
-    print("🏦 CLASIFICADOR DE INGRESOS CON SPARK ML")
+    print("🏦 INCOME CLASSIFIER WITH SPARK ML")
     print("=" * 60)
     
     # Path to data file
